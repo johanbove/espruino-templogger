@@ -1,0 +1,42 @@
+<html>
+ <head>
+ </head>
+ <body>
+  <script src="https://www.puck-js.com/puck.js"></script>
+  <script>
+    function onLine(data) {
+  // CSV data is received here
+  console.log('data', data);
+}
+
+var connection;
+button.addEventListener("click", function() {
+  if (connection) {
+    connection.close();
+    connection = undefined;
+  }
+  Puck.connect(function(c) {
+    if (!c) {
+      alert("Couldn't connect!");
+      return;
+    }
+    connection = c;
+    // Handle the data we get back, and call 'onLine'
+    // whenever we get a line
+    var buf = "";
+    connection.on("data", function(d) {
+      buf += d;
+      var i = buf.indexOf("\n");
+      while (i>=0) {
+        onLine(buf.substr(0,i));
+        buf = buf.substr(i+1);
+        i = buf.indexOf("\n");
+      }
+    });
+    // Request data from Puck.js
+    connection.write("\x10exportData()\n");
+  });
+});
+  </script>
+ </body>
+</html>
