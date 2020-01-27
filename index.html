@@ -13,7 +13,7 @@
     
     <button type="button">Export Data</button>
     
-    <pre>waiting for connection...</pre>
+    <pre></pre>
     
     <script src="https://www.puck-js.com/puck.js"></script>
     
@@ -21,7 +21,7 @@
     function onLine(data) {
       // CSV data is received here
       console.log('data', data);
-      document.querySelector('pre').textContent = data;
+      document.querySelector('pre').textContent += data + '\n';
     }
 
     var connection;
