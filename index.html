@@ -4,6 +4,7 @@
  </head>
  <body>
   <h1>Temp Logger works with Web Bluetooth only</h1>
+  <button id="connect" type="button">Connect</button>
   <script src="https://www.puck-js.com/puck.js"></script>
   <script>
     function onLine(data) {
@@ -12,6 +13,7 @@
 }
 
 var connection;
+   var button = document.getElementById('connect');
 button.addEventListener("click", function() {
   if (connection) {
     connection.close();
