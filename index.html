@@ -21,7 +21,7 @@
     function onLine(data) {
       // CSV data is received here
       console.log('data', data);
-      document.querySelector('pre').textContent(data);
+      document.querySelector('pre').textContent = data;
     }
 
     var connection;
