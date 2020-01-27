@@ -1,46 +1,60 @@
 <html>
- <head>
-  <title>Espruino Temp Logger</title>
- </head>
- <body>
-  <h1>Temp Logger works with Web Bluetooth only</h1>
-  <button id="connect" type="button">Connect</button>
-  <script src="https://www.puck-js.com/puck.js"></script>
-  <script>
+  <head>
+    <title>Espruino Temp Logger</title>
+  </head>
+  <body>
+    <h1>Temp Logger works with Web Bluetooth only</h1>
+    
+    <h2>References</h2>
+    <ul>
+      <li><a href="https://www.espruino.com/Data+Collection">https://www.espruino.com/Data+Collection</a>
+      <li><a href="https://www.espruino.com/Web%20Bluetooth">https://www.espruino.com/Web%20Bluetooth</a>
+    </ul>
+    
+    <button type="button">Export Data</button>
+    
+    <pre>waiting for connection...</pre>
+    
+    <script src="https://www.puck-js.com/puck.js"></script>
+    
+    <script>
     function onLine(data) {
-  // CSV data is received here
-  console.log('data', data);
-}
-
-var connection;
-   var button = document.getElementById('connect');
-button.addEventListener("click", function() {
-  if (connection) {
-    connection.close();
-    connection = undefined;
-  }
-  Puck.connect(function(c) {
-    if (!c) {
-      alert("Couldn't connect!");
-      return;
+      // CSV data is received here
+      console.log('data', data);
+      document.querySelector('pre').textContent(data);
     }
-    connection = c;
-    // Handle the data we get back, and call 'onLine'
-    // whenever we get a line
-    var buf = "";
-    connection.on("data", function(d) {
-      buf += d;
-      var i = buf.indexOf("\n");
-      while (i>=0) {
-        onLine(buf.substr(0,i));
-        buf = buf.substr(i+1);
-        i = buf.indexOf("\n");
+
+    var connection;
+    var button = document.querySelector('button');
+
+    button.addEventListener("click", function() {
+      if (connection) {
+        connection.close();
+        connection = undefined;
       }
+  
+      Puck.connect(function(c) {
+        if (!c) {
+          alert("Couldn't connect!");
+          return;
+        }
+        connection = c;
+        // Handle the data we get back, and call 'onLine'
+        // whenever we get a line
+        var buf = "";
+        connection.on("data", function(d) {
+          buf += d;
+          var i = buf.indexOf("\n");
+          while (i>=0) {
+            onLine(buf.substr(0,i));
+            buf = buf.substr(i+1);
+            i = buf.indexOf("\n");
+          }
+      });
+      // Request data from Puck.js
+      connection.write("\x10exportData()\n");
     });
-    // Request data from Puck.js
-    connection.write("\x10exportData()\n");
   });
-});
-  </script>
- </body>
+    </script>
+  </body>
 </html>
